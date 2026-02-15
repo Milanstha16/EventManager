@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Events - EventManager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">EventManager</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li id="authLinks"></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <h1>Events</h1>
+
+        <!-- Event Form (hidden in readonly) -->
+        <form id="eventForm" class="form-box">
+            <input type="hidden" id="eventId">
+            <input type="text" id="title" placeholder="Event Title" required>
+            <input type="date" id="date" required>
+            <select id="category" required>
+                <option value="">Select Category</option>
+                <option value="conference">Conference</option>
+                <option value="workshop">Workshop</option>
+                <option value="meetup">Meetup</option>
+            </select>
+            <textarea id="description" placeholder="Event Description"></textarea>
+            <button type="submit" class="btn">Save Event</button>
+            <p id="eventError" class="error"></p>
+        </form>
+
+        <!-- Search & Filter -->
+        <div class="form-box">
+            <input type="text" id="searchInput" placeholder="Search events...">
+            <select id="filterCategory">
+                <option value="all">All Categories</option>
+                <option value="conference">Conference</option>
+                <option value="workshop">Workshop</option>
+                <option value="meetup">Meetup</option>
+            </select>
+            <select id="filterStatus">
+                <option value="all">All Status</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="ongoing">Ongoing</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+
+        <!-- Event List -->
+        <div id="eventList" class="event-grid"></div>
+
+    </section>
+
+    <footer>
+        <p>© 2026 Event Management System</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/events.js"></script>
+</body>
+
+</html>

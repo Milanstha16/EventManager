@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - EventManager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">EventManager</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li id="authLinks"></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <h1 id="welcomeMessage"></h1>
+
+        <div class="form-box" style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <!-- Manage Events -->
+            <a href="events.html">
+                <button class="btn">Manage Events</button>
+            </a>
+
+            <!-- View Events -->
+            <a href="events.html?view=readonly">
+                <button class="btn" style="background-color: #28a745;">View Events</button>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Event Management System</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+
+    <script>
+        // Protect Dashboard page
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+        if (!currentUser) {
+            window.location.href = "login.html";
+        } else {
+            document.getElementById("welcomeMessage").textContent =
+                "Welcome, " + currentUser.name;
+        }
+    </script>
+
+</body>
+
+</html>
