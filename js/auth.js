@@ -1,23 +1,41 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================
-     AUTO SESSION CHECK
+     PAGE DETECTION (WORKS ON VERCEL + LOCAL)
   ========================== */
+
+  const path = window.location.pathname.toLowerCase();
+
+  const isLoginPage =
+    path.endsWith("/login") ||
+    path.endsWith("/login.html");
+
+  const isRegisterPage =
+    path.endsWith("/register") ||
+    path.endsWith("/register.html");
+
+  const isDashboardPage =
+    path.endsWith("/dashboard") ||
+    path.endsWith("/dashboard.html");
+
+  const isProfilePage =
+    path.endsWith("/profile") ||
+    path.endsWith("/profile.html");
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  // Redirect logged-in user away from login/register
-  if (currentUser &&
-      (window.location.pathname.includes("login.html") ||
-       window.location.pathname.includes("register.html"))) {
+  /* =========================
+     AUTO SESSION CHECK
+  ========================== */
+
+  // Redirect logged-in users away from login/register
+  if (currentUser && (isLoginPage || isRegisterPage)) {
     redirectUser(currentUser.role);
   }
 
-  // Protect dashboard and profile pages
-  if (!currentUser &&
-      (window.location.pathname.includes("dashboard.html") ||
-       window.location.pathname.includes("profile.html"))) {
-    window.location.href = "login.html";
+  // Protect dashboard & profile
+  if (!currentUser && (isDashboardPage || isProfilePage)) {
+    window.location.href = "/login.html";
   }
 
   /* =========================
@@ -38,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       errorElement.textContent = "";
 
-      // Validation
       if (name.length < 3) {
         errorElement.textContent = "Name must be at least 3 characters.";
         return;
@@ -61,9 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let users = JSON.parse(localStorage.getItem("users")) || [];
 
-      const emailExists = users.some(
-        user => user.email === email
-      );
+      const emailExists = users.some(user => user.email === email);
 
       if (emailExists) {
         errorElement.textContent = "Email already registered.";
@@ -83,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       alert("Registration successful! Please login.");
       registerForm.reset();
-      window.location.href = "login.html";
+      window.location.href = "/login.html";
     });
   }
 
@@ -132,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
       localStorage.removeItem("currentUser");
-      window.location.href = "login.html";
+      window.location.href = "/login.html";
     });
   }
 
@@ -143,10 +158,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const profileForm = document.getElementById("profileForm");
 
   if (profileForm) {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
     if (!currentUser) {
-      window.location.href = "login.html";
+      window.location.href = "/login.html";
       return;
     }
 
@@ -155,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = document.getElementById("profilePassword");
     const errorElement = document.getElementById("profileError");
 
-    // Pre-fill current data
     nameInput.value = currentUser.name;
     emailInput.value = currentUser.email;
 
@@ -206,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("currentUser", JSON.stringify(users[userIndex]));
 
       alert("Profile updated successfully!");
-      window.location.href = "dashboard.html";
+      window.location.href = "/dashboard.html";
     });
   }
 
@@ -226,6 +238,5 @@ function hashPassword(password) {
 }
 
 function redirectUser(role) {
-  // For now, all roles go to dashboard.html
-  window.location.href = "dashboard.html";
+  window.location.href = "/dashboard.html";
 }
