@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================
-     PAGE DETECTION (WORKS ON VERCEL + LOCAL)
+     PAGE DETECTION (VERCEL SAFE)
   ========================== */
 
   const path = window.location.pathname.toLowerCase();
@@ -28,12 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
      AUTO SESSION CHECK
   ========================== */
 
-  // Redirect logged-in users away from login/register
+  // If logged in and on login/register → redirect to dashboard
   if (currentUser && (isLoginPage || isRegisterPage)) {
-    redirectUser(currentUser.role);
+    window.location.href = "/dashboard.html";
   }
 
-  // Protect dashboard & profile
+  // If NOT logged in and trying to access protected page
   if (!currentUser && (isDashboardPage || isProfilePage)) {
     window.location.href = "/login.html";
   }
@@ -48,11 +48,19 @@ document.addEventListener("DOMContentLoaded", () => {
     registerForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim().toLowerCase();
-      const password = document.getElementById("password").value.trim();
-      const role = document.getElementById("role").value;
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
       const errorElement = document.getElementById("registerError");
+
+      if (!nameInput || !emailInput || !passwordInput) {
+        console.error("Register form inputs missing in HTML.");
+        return;
+      }
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value.trim();
 
       errorElement.textContent = "";
 
@@ -71,11 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (!role) {
-        errorElement.textContent = "Please select a role.";
-        return;
-      }
-
       let users = JSON.parse(localStorage.getItem("users")) || [];
 
       const emailExists = users.some(user => user.email === email);
@@ -89,8 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
         id: Date.now(),
         name,
         email,
-        password: hashPassword(password),
-        role
+        password: hashPassword(password)
       };
 
       users.push(newUser);
@@ -112,9 +114,17 @@ document.addEventListener("DOMContentLoaded", () => {
     loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const password = document.getElementById("loginPassword").value.trim();
+      const emailInput = document.getElementById("loginEmail");
+      const passwordInput = document.getElementById("loginPassword");
       const errorElement = document.getElementById("loginError");
+
+      if (!emailInput || !passwordInput) {
+        console.error("Login form inputs missing in HTML.");
+        return;
+      }
+
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value.trim();
 
       errorElement.textContent = "";
 
@@ -134,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("currentUser", JSON.stringify(user));
 
       alert("Login successful!");
-      redirectUser(user.role);
+      window.location.href = "/dashboard.html";
     });
   }
 
@@ -168,6 +178,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = document.getElementById("profilePassword");
     const errorElement = document.getElementById("profileError");
 
+    if (!nameInput || !emailInput) {
+      console.error("Profile inputs missing in HTML.");
+      return;
+    }
+
     nameInput.value = currentUser.name;
     emailInput.value = currentUser.email;
 
@@ -176,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const newName = nameInput.value.trim();
       const newEmail = emailInput.value.trim().toLowerCase();
-      const newPassword = passwordInput.value.trim();
+      const newPassword = passwordInput ? passwordInput.value.trim() : "";
 
       errorElement.textContent = "";
 
@@ -234,9 +249,5 @@ function validateEmail(email) {
 }
 
 function hashPassword(password) {
-  return btoa(password); // Demo only
-}
-
-function redirectUser(role) {
-  window.location.href = "/dashboard.html";
+  return btoa(password); // Demo only (not secure)
 }
